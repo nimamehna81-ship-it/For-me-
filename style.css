@@ -1,0 +1,143 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    display:flex;
+    height:100vh;
+    background:linear-gradient(135deg,#FFEAF5,#F3E8FF,#EAF6FF);
+}
+
+/* Sidebar */
+
+.sidebar{
+    width:280px;
+    padding:25px;
+    background:rgba(255,255,255,.45);
+    backdrop-filter:blur(18px);
+    border-right:1px solid rgba(255,255,255,.3);
+    overflow-y:auto;
+}
+
+.sidebar h1{
+    text-align:center;
+    color:#7B5EA7;
+    margin-bottom:25px;
+}
+
+#newFolder{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:16px;
+    background:#FFB6D9;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+    margin-bottom:15px;
+}
+
+#newFolder:hover{
+    opacity:.9;
+}
+
+#search{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:15px;
+    margin-bottom:20px;
+    outline:none;
+}
+
+.folder,
+.note{
+    background:white;
+    padding:14px;
+    border-radius:15px;
+    margin-bottom:12px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.folder:hover,
+.note:hover{
+    transform:translateX(5px);
+}
+
+/* Main */
+
+.main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    padding:25px;
+}
+
+.toolbar{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+#title{
+    flex:1;
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    outline:none;
+    font-size:18px;
+}
+
+#favorite{
+    border:none;
+    background:#FFD966;
+    border-radius:15px;
+    width:60px;
+    cursor:pointer;
+    font-size:20px;
+}
+
+#editor{
+    flex:1;
+    border:none;
+    border-radius:25px;
+    padding:25px;
+    resize:none;
+    outline:none;
+    background:rgba(255,255,255,.65);
+    backdrop-filter:blur(15px);
+    font-size:18px;
+    line-height:1.8;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+body{
+    flex-direction:column;
+}
+
+.sidebar{
+    width:100%;
+    height:280px;
+}
+
+.main{
+    padding:15px;
+}
+
+.toolbar{
+    flex-wrap:wrap;
+}
+
+#title{
+    width:100%;
+}
+
+}
