@@ -1,7 +1,6 @@
-// ==========================
-// Pretty Notes
-// Part 1
-// ==========================
+// ===============================
+// Pretty Notes V2 - Part 1
+// ===============================
 
 // Load saved data
 let folders = JSON.parse(localStorage.getItem("folders")) || [];
@@ -13,159 +12,197 @@ let currentNote = -1;
 // Elements
 const foldersDiv = document.getElementById("folders");
 const notesList = document.getElementById("notesList");
+
 const newFolderBtn = document.getElementById("newFolder");
-const searchInput = document.getElementById("search");
 
 const titleInput = document.getElementById("title");
 const editor = document.getElementById("editor");
-const favoriteBtn = document.getElementById("favorite");
 
-// Save everything
+// ----------------------------
+// Save Data
+// ----------------------------
+
 function saveData(){
-    localStorage.setItem("folders", JSON.stringify(folders));
-    localStorage.setItem("notes", JSON.stringify(notes));
-}
 
-// -------------------
-// Create Folder
-// -------------------
+localStorage.setItem("folders",JSON.stringify(folders));
 
-newFolderBtn.onclick = () => {
-
-    const name = prompt("Folder name:");
-
-    if(!name) return;
-
-    if(folders.includes(name)){
-        alert("Folder already exists.");
-        return;
-    }
-
-    folders.push(name);
-
-    notes[name] = [];
-
-    saveData();
-
-    renderFolders();
+localStorage.setItem("notes",JSON.stringify(notes));
 
 }
 
-// -------------------
+// ----------------------------
 // Render Folder List
-// -------------------
+// ----------------------------
 
 function renderFolders(){
 
-    foldersDiv.innerHTML = "";
+foldersDiv.innerHTML="";
 
-    folders.forEach(folder=>{
+folders.forEach(folder=>{
 
-        const div=document.createElement("div");
+const div=document.createElement("div");
 
-        div.className="folder";
+div.className="folder";
 
-        div.innerHTML="📁 "+folder;
+div.innerHTML="📁 "+folder;
 
-        div.onclick=()=>{
+div.onclick=()=>{
 
-            currentFolder=folder;
+currentFolder=folder;
 
-            renderNotes();
+renderNotes();
 
-        }
+};
 
-        foldersDiv.appendChild(div);
+foldersDiv.appendChild(div);
 
-    });
+});
 
 }
 
-// -------------------
+// ----------------------------
+// Create Folder
+// ----------------------------
+
+newFolderBtn.onclick=()=>{
+
+const name=prompt("Folder name");
+
+if(!name) return;
+
+if(folders.includes(name)){
+
+alert("Folder already exists.");
+
+return;
+
+}
+
+folders.push(name);
+
+notes[name]=[];
+
+saveData();
+
+renderFolders();
+
+};
+
+// ----------------------------
 // Render Notes
-// -------------------
+// ----------------------------
 
 function renderNotes(){
 
-    notesList.innerHTML="";
+notesList.innerHTML="";
 
-    if(currentFolder=="") return;
+if(currentFolder=="") return;
 
-    notes[currentFolder].forEach((note,index)=>{
+notes[currentFolder].forEach((note,index)=>{
 
-        const div=document.createElement("div");
+const div=document.createElement("div");
 
-        div.className="note";
+div.className="note";
 
-        div.innerHTML=(note.favorite?"⭐ ":"📝 ")+note.title;
+div.innerHTML="📝 "+note.title;
 
-        div.onclick=()=>{
+div.onclick=()=>{
 
-            currentNote=index;
+currentNote=index;
 
-            titleInput.value=note.title;
+titleInput.value=note.title;
 
-            editor.value=note.content;
+editor.value=note.content;
 
-            favoriteBtn.textContent=note.favorite?"⭐":"☆";
+};
 
-        }
+notesList.appendChild(div);
 
-        notesList.appendChild(div);
-
-    });
+});
 
 }
 
-// -------------------
-// New Note
-// -------------------
+// ----------------------------
+// Create New Note
+// ----------------------------
 
-editor.ondblclick=()=>{
+document.getElementById("newNote").onclick=()=>{
 
-    if(currentFolder==""){
+if(currentFolder==""){
 
-        alert("Create a folder first.");
+alert("Create a folder first.");
 
-        return;
-
-    }
-
-    notes[currentFolder].push({
-
-        title:"Untitled",
-
-        content:"",
-
-        favorite:false
-
-    });
-
-    currentNote=notes[currentFolder].length-1;
-
-    titleInput.value="";
-
-    editor.value="";
-
-    saveData();
-
-    renderNotes();
+return;
 
 }
 
-// -------------------
+notes[currentFolder].push({
+
+title:"Untitled",
+
+content:"",
+
+favorite:false
+
+});
+
+currentNote=notes[currentFolder].length-1;
+
+titleInput.value="";
+
+editor.value="";
+
+saveData();
+
+renderNotes();
+
+};
+
+// ----------------------------
 // Auto Save
-// -------------------
+// ----------------------------
 
 function autoSave(){
 
+if(currentFolder=="") return;
+
+if(currentNote==-1) return;
+
+notes[currentFolder][currentNote].title=titleInput.value;
+
+notes[currentFolder][currentNote].content=editor.value;
+
+saveData();
+
+renderNotes();
+
+}
+
+titleInput.addEventListener("input",autoSave);
+
+editor.addEventListener("input",autoSave);
+
+// ----------------------------
+
+renderFolders();
+// ===============================
+// Pretty Notes V2 - Part 2
+// Favorites + Search
+// ===============================
+
+const favoriteBtn = document.getElementById("favorite");
+const searchInput = document.getElementById("search");
+
+// -------- Favorites --------
+
+favoriteBtn.onclick = () => {
+
     if(currentFolder=="") return;
 
     if(currentNote==-1) return;
 
-    notes[currentFolder][currentNote].title=titleInput.value;
-
-    notes[currentFolder][currentNote].content=editor.value;
+    notes[currentFolder][currentNote].favorite =
+    !notes[currentFolder][currentNote].favorite;
 
     saveData();
 
@@ -173,158 +210,393 @@ function autoSave(){
 
 }
 
-titleInput.oninput=autoSave;
+// -------- Update renderNotes --------
 
-editor.oninput=autoSave;
+function renderNotes(){
 
-// -------------------
-// Favorite
-// -------------------
+notesList.innerHTML="";
 
-favoriteBtn.onclick=()=>{
+if(currentFolder=="") return;
 
-    if(currentFolder=="") return;
+notes[currentFolder].forEach((note,index)=>{
 
-    if(currentNote==-1) return;
+const div=document.createElement("div");
 
-    notes[currentFolder][currentNote].favorite=!notes[currentFolder][currentNote].favorite;
+div.className="note";
 
-    favoriteBtn.textContent=notes[currentFolder][currentNote].favorite?"⭐":"☆";
+div.innerHTML=
+(note.favorite ? "⭐ " : "📝 ")
++ note.title;
 
-    saveData();
+div.onclick=()=>{
 
-    renderNotes();
+currentNote=index;
+
+titleInput.value=note.title;
+
+editor.value=note.content;
+
+};
+
+notesList.appendChild(div);
+
+});
 
 }
 
-// -------------------
-// Search
-// -------------------
+// -------- Search --------
 
-searchInput.oninput=()=>{
+searchInput.addEventListener("input",()=>{
 
-    const value=searchInput.value.toLowerCase();
+const value=searchinput.value.toLowercasr();
+    document.queryselectorAll(".note").forEach(note=>{
+note style.display=
+note.innertext.toLowercase(). includes (value)
+? "block"
+: "none";
+});
+});
+renderFolders();
+// ===============================
+// Pretty Notes V2 - Part 3
+// Delete + PDF Export
+// ===============================
 
-    document.querySelectorAll(".note").forEach(note=>{
+// ---------- Delete Current Note ----------
 
-        note.style.display=note.innerText.toLowerCase().includes(value)
-          // =========================
-// PART 2
-// =========================
+function deleteCurrentNote(){
 
-const newNoteBtn = document.getElementById("newNote");
-const deleteNoteBtn = document.getElementById("deleteNote");
-const deleteFolderBtn = document.getElementById("deleteFolder");
+if(currentFolder=="") return;
 
-// New Note Button
-newNoteBtn.onclick = () => {
+if(currentNote==-1) return;
+
+if(!confirm("Delete this note?")) return;
+
+notes[currentFolder].splice(currentNote,1);
+
+currentNote=-1;
+
+titleInput.value="";
+
+editor.value="";
+
+saveData();
+
+renderNotes();
+
+}
+
+// ---------- Delete Current Folder ----------
+
+function deleteCurrentFolder(){
+
+if(currentFolder=="") return;
+
+if(!confirm("Delete this folder?")) return;
+
+delete notes[currentFolder];
+
+folders=folders.filter(f=>f!==currentFolder);
+
+currentFolder="";
+
+currentNote=-1;
+
+saveData();
+
+renderFolders();
+
+notesList.innerHTML="";
+
+titleInput.value="";
+
+editor.value="";
+
+}
+
+// ---------- Keyboard Shortcuts ----------
+
+document.addEventListener("keydown",(e)=>{
+
+if(e.ctrlKey && e.key=="s"){
+
+e.preventDefault();
+
+saveData();
+
+alert("✅ Notes Saved");
+
+}
+
+});
+
+// ---------- Export as Text ----------
+
+function exportNote(){
+
+if(currentFolder=="") return;
+
+if(currentNote==-1) return;
+
+const text=
+titleInput.value+
+"\n\n"+
+editor.value;
+
+const blob=new Blob([text],{type:"text/plain"});
+
+const link=document.createElement("a");
+
+link.href=URL.createObjectURL(blob);
+
+link.download=(titleInput.value||"note")+".txt";
+
+link.click();
+
+}
+// ===============================
+// Pretty Notes V2 - Part 4
+// Delete Buttons + PDF Export
+// ===============================
+
+// Create Toolbar Buttons
+
+const toolbar = document.querySelector(".toolbar");
+
+// Delete Note Button
+const deleteBtn = document.createElement("button");
+deleteBtn.innerHTML = "🗑️";
+deleteBtn.title = "Delete Note";
+toolbar.appendChild(deleteBtn);
+
+// Export PDF Button
+const pdfBtn = document.createElement("button");
+pdfBtn.innerHTML = "📄";
+pdfBtn.title = "Export";
+toolbar.appendChild(pdfBtn);
+
+// --------------------
+// Delete Note
+// --------------------
+
+deleteBtn.onclick = () => {
+
+    if(currentFolder==""){
+
+        alert("Open a folder first.");
+
+        return;
+
+    }
+
+    if(currentNote==-1){
+
+        alert("Open a note first.");
+
+        return;
+
+    }
+
+    if(confirm("Delete this note?")){
+
+        notes[currentFolder].splice(currentNote,1);
+
+        currentNote=-1;
+
+        titleInput.value="";
+
+        editor.value="";
+
+        saveData();
+
+        renderNotes();
+
+    }
+
+};
+
+// --------------------
+// Export
+// --------------------
+
+pdfBtn.onclick = () => {
+
+    if(currentFolder==""){
+
+        alert("Open a note first.");
+
+        return;
+
+    }
+
+    if(currentNote==-1){
+
+        alert("Open a note first.");
+
+        return;
+
+    }
+
+    const content =
+titleInput.value +
+"\n\n-----------------\n\n" +
+editor.value;
+
+    const blob = new Blob([content],{type:"text/plain"});
+
+    const a = document.createElement("a");
+
+    a.href = URL.createObjectURL(blob);
+
+    a.download = titleInput.value + ".txt";
+
+    a.click();
+
+};
+
+// --------------------
+// Welcome Message
+// --------------------
+
+if(folders.length===0){
+
+console.log("🌸 Welcome to Pretty Notes!");
+
+}
+// ===============================
+// Pretty Notes V2 - Part 5
+// Dark Mode + Better UI
+// ===============================
+
+// Create Dark Mode Button
+const darkBtn = document.createElement("button");
+darkBtn.innerHTML = "🌙";
+darkBtn.title = "Dark Mode";
+toolbar.appendChild(darkBtn);
+
+// Load Theme
+let darkMode = localStorage.getItem("darkMode") === "true";
+
+if(darkMode){
+    document.body.classList.add("dark");
+}
+
+// Toggle Theme
+darkBtn.onclick = () => {
+
+    darkMode = !darkMode;
+
+    document.body.classList.toggle("dark");
+
+    localStorage.setItem("darkMode", darkMode);
+
+};
+
+// Welcome Note
+if(folders.length === 0){
+
+    folders.push("My Notes");
+
+    notes["My Notes"] = [];
+
+    currentFolder = "My Notes";
+
+    notes["My Notes"].push({
+
+        title:"🌸 Welcome",
+
+        content:
+`Welcome to Pretty Notes!
+
+• Create unlimited notes
+// ===============================
+// Pretty Notes V2 - Part 6
+// Date + Better Sorting
+// ===============================
+
+// Add date to new notes
+
+const oldNewNote = document.getElementById("newNote").onclick;
+
+document.getElementById("newNote").onclick = () => {
 
     if(currentFolder==""){
         alert("Create a folder first.");
         return;
     }
 
-    notes[currentFolder].push({
+    notes[currentFolder].unshift({
+
         title:"Untitled",
+
         content:"",
-        favorite:false
+
+        favorite:false,
+
+        date:new Date().toLocaleString()
+
     });
 
-    currentNote = notes[currentFolder].length-1;
+    currentNote=0;
 
     titleInput.value="";
+
     editor.value="";
 
     saveData();
+
     renderNotes();
 
 };
 
-// Delete Note
+// New renderNotes()
 
-deleteNoteBtn.onclick = () => {
+renderNotes = function(){
 
-    if(currentFolder=="" || currentNote==-1) return;
+notesList.innerHTML="";
 
-    if(!confirm("Delete this note?")) return;
+if(currentFolder=="") return;
 
-    notes[currentFolder].splice(currentNote,1);
+notes[currentFolder]
 
-    currentNote=-1;
+.sort((a,b)=>{
 
-    titleInput.value="";
-    editor.value="";
+if(a.favorite!==b.favorite){
 
-    saveData();
-    renderNotes();
-
-};
-
-// Delete Folder
-
-deleteFolderBtn.onclick = () => {
-
-    if(currentFolder=="") return;
-
-    if(!confirm("Delete this folder?")) return;
-
-    delete notes[currentFolder];
-
-    folders = folders.filter(f=>f!==currentFolder);
-
-    currentFolder="";
-    currentNote=-1;
-
-    foldersDiv.innerHTML="";
-    notesList.innerHTML="";
-
-    titleInput.value="";
-    editor.value="";
-
-    saveData();
-    renderFolders();
-
-};
-      
-        ? "block"
-        : "none";
-
-    });
+return b.favorite-a.favorite;
 
 }
 
-// -------------------
+return new Date(b.date)-new Date(a.date);
+
+})
+
+.forEach((note,index)=>{
+
+const div=document.createElement("div");
+
+div.className="note";
+
+div.innerHTML=`
+<b>${note.favorite?"⭐ ":"📝 "}${note.title}</b>
+<br>
+<small>${note.date||""}</small>
+`;
+
+div.onclick=()=>{
+
+currentNote=index;
+
+titleInput.value=note.title;
+
+editor.value=note.content;
+
+};
+
+notesList.appendChild(div);
+
+});
+
+};
 
 renderFolders();
-// =========================
-// PART 3 - PDF Export
-// =========================
-
-const exportBtn = document.getElementById("exportPDF");
-
-exportBtn.onclick = () => {
-
-    if(currentFolder=="" || currentNote==-1){
-        alert("Open a note first.");
-        return;
-    }
-
-    const { jsPDF } = window.jspdf;
-
-    const pdf = new jsPDF();
-
-    pdf.setFont("helvetica","bold");
-    pdf.setFontSize(20);
-
-    pdf.text(titleInput.value,20,20);
-
-    pdf.setFont("helvetica","normal");
-    pdf.setFontSize(12);
-
-    const lines = pdf.splitTextToSize(editor.value,170);
-
-    pdf.text(lines,20,35);
-
-    pdf.save(titleInput.value || "PrettyNote.pdf");
-
-}
