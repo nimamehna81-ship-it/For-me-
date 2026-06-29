@@ -1,51 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Pretty Notes</title>
+<title>🌸 Pretty Notes</title>
 
 <link rel="stylesheet" href="style.css">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
 
-<div class="sidebar">
+<div class="container">
 
-<h1>🌸 Pretty Notes</h1>
+    <!-- Sidebar -->
 
-<button id="newFolder">📁 New Folder</button>
+    <aside class="sidebar">
 
-<input
-type="text"
-id="search"
-placeholder="🔍 Search notes...">
+        <h1>🌸 Pretty Notes</h1>
 
-<div id="folders"></div>
+        <button id="newFolder">
+            ➕ New Folder
+        </button>
 
-<div id="notesList"></div>
+        <input
+        type="text"
+        id="search"
+        placeholder="🔍 Search notes...">
 
-</div>
+        <div class="sectionTitle">
+            📁 Folders
+        </div>
 
-<div class="main">
+        <div id="folders"></div>
 
-<div class="toolbar">
+        <div class="sectionTitle">
+            📝 Notes
+        </div>
 
-<input
-type="text"
-id="title"
-placeholder="Note title...">
+        <div id="notesList"></div>
 
-<button id="favorite">⭐</button>
+    </aside>
 
-</div>
+    <!-- Main -->
 
-<textarea
-id="editor"
-placeholder="Start writing your beautiful notes here..."></textarea>
+    <main class="main">
+
+        <div class="toolbar">
+
+            <input
+            id="title"
+            placeholder="Untitled Note">
+
+            <button id="favorite">
+                ⭐
+            </button>
+
+            <button id="newNote">
+                📝 New Note
+            </button>
+
+        </div>
+
+        <textarea
+        id="editor"
+        placeholder="Start writing your beautiful notes here... 🌸"></textarea>
+
+    </main>
 
 </div>
 
